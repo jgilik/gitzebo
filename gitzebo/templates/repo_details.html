@@ -4,6 +4,10 @@
 <h2>{{ repo.repository_name }}</h2>
 <p>To clone this repository, use this command:</p>
 <pre>git clone git@{{ hostname }}:{{ repo.repository_name }}</pre>
+<p>If this is a brand new repository and you want to push an existing
+git repository up to it, use these commands:</p>
+<pre>git remote add origin git@{{ hostname }}:{{ repo.repository_name }}
+git push --set-upstream origin master</pre>
 
 <h2>Access Control Levels (ACLs)</h2>
 
