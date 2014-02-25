@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>
+            {% block title %}
+            Git Management Made Moderately Simple
+            {% endblock %}
+            - Gitzebo
+        </title>
+        <link
+            href="{{ url_for('static', filename='gitzebo.css') }}"
+            rel="stylesheet"
+            type="text/css" />
+    </head>
+    <body>
+        <div id="header" class="header">
+            <h2>Gitzebo</h2>
+            <a href="{{ url_for('home') }}">Home</a> &#8226;
+            <a href="{{ url_for('list_repos') }}">Repos</a> &#8226;
+            <a href="{{ url_for('list_users') }}">Users</a> &#8226;
+            <a href="{{ url_for('list_keys') }}">Keys</a> &#8226;
+            {% if request.user %}
+                Logged in as {{ request.user['commit_name'] }}
+                ({{ request.user['commit_email'] }})
+            {% else %}
+                Not logged in
+            {% endif %}
+        </div>
+        <div id="content" class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

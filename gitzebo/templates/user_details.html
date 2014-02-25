@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}User Details{% endblock %}
+{% block content %}
+<h2>User Details</h2>
+<table>
+<tr>
+    <td class="tblLt">
+        Full Name<br />
+        <span class="note">for commit messages</span>
+    </td>
+    <td class="tblRt">
+        {{ user.commit_name }}
+    </td>
+</tr>
+<tr>
+    <td class="tblLt">
+        Email Address<br />
+        <span class="note">for commit messages</span>
+    </td>
+    <td class="tblRt">
+        {{ user.commit_email }}
+    </td>
+</tr>
+<tr>
+    <td class="tblLt">
+        System Name<br />
+        <span class="note">for website login</span>
+    </td>
+    <td class="tblRt">
+        {{ user.user_name }}
+    </td>
+</tr>
+{% if request.user['can_create_users'] %}
+<tr>
+    <td class="tblLt">
+        Deletion Link<br />
+        <span class="note"><strong>Warning:</strong> no confirmation</span>
+    </td>
+    <td class="tblRt">
+        <a href="{{ url_for('delete_user', id=user.user_id) }}">delete</a>
+    </td>
+</tr>
+{% endif %}
+</table>
+
+{% endblock %}

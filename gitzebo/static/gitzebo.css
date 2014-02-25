@@ -1,0 +1,26 @@
+.header {
+    width: 100%;
+    border-bottom: 1px solid #cccccc;
+}
+
+th {
+    border-bottom: 1px solid #cccccc;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+td {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.tblLt {
+    font-weight: bold;
+    border-right: 1px solid #cccccc;
+    text-align: center;
+}
+
+.note {
+    font-weight: normal;
+    font-size: 75%;
+    color: #777777;
+}

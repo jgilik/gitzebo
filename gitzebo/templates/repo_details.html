@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block title %}Repository Details{% endblock %}
+{% block content %}
+<h2>{{ repo.repository_name }}</h2>
+<p>To clone this repository, use this command:</p>
+<pre>git clone git@{{ hostname }}:{{ repo.repository_name }}</pre>
+
+<h2>Access Control Levels (ACLs)</h2>
+
+<table>
+    <tr>
+        <th>User</th>
+        <th>Read</th>
+        <th>Write</th>
+        <th>Rewrite History</th>
+        <th>Create Tags</th>
+        <th>Modify Tags</th>
+    </tr>
+
+{% for repo_acl in repo_acls %}
+    <tr>
+        <td>{{ repo_acl.user_name }}</td>
+
+{% if repo_acl.can_read %}
+        <td>allowed</td>
+{% else %}
+        <td>denied</td>
+{% endif %}
+
+{% if repo_acl.can_write %}
+        <td>allowed</td>
+{% else %}
+        <td>denied</td>
+{% endif %}
+
+{% if repo_acl.can_rewind %}
+        <td>allowed</td>
+{% else %}
+        <td>denied</td>
+{% endif %}
+
+{% if repo_acl.can_create_tag %}
+        <td>allowed</td>
+{% else %}
+        <td>denied</td>
+{% endif %}
+
+{% if repo_acl.can_modify_tag %}
+        <td>allowed</td>
+{% else %}
+        <td>denied</td>
+{% endif %}
+
+    </tr>
+{% endfor %}
+
+</table>
+
+
+{% if user_acls.is_owner %}
+
+<h2>Administration</h2>
+
+<p>You are an owner of this repository and can modify it (and its ACLs).
+Click <a href="{{ url_for('edit_repo', id=repo.repository_id) }}">here</a>
+to edit the repository.</p>
+
+{% endif %}
+
+{% endblock %}

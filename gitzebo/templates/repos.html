@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}Repository List{% endblock %}
+{% block content %}
+<h2>Your Repositories</h2>
+<ul>
+{% for repo in repolist %}
+<li>
+<a href="{{ url_for('repo_details', id=repo.repository_id) }}">{{ repo.repository_name }}</a>
+</li>
+{% endfor %}
+</ul>
+
+{% if request.user.can_create_repositories %}
+<h2>Create a Repository</h2>
+<form action="{{ url_for('add_repo') }}" method="POST">
+    <label for="repository_name">Repository Name:</label>
+    <input type="text" name="repository_name" />
+    <br />
+
+    <input type="submit" value="Add Repository" />
+</form>
+{% endif %}
+{% endblock %}
+

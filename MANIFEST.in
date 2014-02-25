@@ -1,0 +1,7 @@
+recursive-include gitzebo/templates *
+recursive-include gitzebo/static *
+recursive-include gitzebo/default_hooks *
+
+# used when installing library from source distributions
+include requirements.txt
+include README.rst

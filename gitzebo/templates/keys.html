@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Key List{% endblock %}
+{% block content %}
+<h2>Your Keys</h2>
+<ul>
+{% for key in keylist %}
+<li>
+{{ key.name }} (<a href="{{ url_for('delete_key', id=key.key_id) }}">delete</a>)
+<!-- TODO: create a tooltip showing the public key on hover -->
+</li>
+{% endfor %}
+</ul>
+
+<h2>Add a Key</h2>
+<form action="{{ url_for('add_key') }}" method="POST">
+    <label for="key_name">Key Name:</label>
+    <input type="text" name="key_name" />
+    <br />
+
+    <label for="key">Public Key:</label><br />
+    <textarea name="key" rows="4" cols="80"></textarea>
+    <br />
+
+    <input type="submit" value="Add Key" />
+</form>
+{% endblock %}

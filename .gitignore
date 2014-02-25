@@ -1,0 +1,7 @@
+env/
+build/
+develop-eggs/
+dist/
+*.egg-info/
+*.egg
+.installed.cfg

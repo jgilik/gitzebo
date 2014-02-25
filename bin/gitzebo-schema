@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+from gitzebo.schema import create_schema, upgrade_schema, destroy_schema
+
+if __name__ == "__main__":
+    import argparse, sys
+    parser = argparse.ArgumentParser(
+        description="Tool to create, destroy, or upgrade Gitzebo schemas."
+    )
+    parser.add_argument(
+        'command',
+        type=str,
+        help="'create', 'upgrade', or 'destroy'",
+    )
+    args = parser.parse_args()
+    if args.command == 'create':
+        create_schema()
+        sys.exit(0)
+    elif args.command == 'upgrade':
+        upgrade_schema()
+        sys.exit(0)
+    elif args.command == 'destroy':
+        destroy_schema()
+        sys.exit(0)
+    else:
+        parser.print_help()
+        sys.exit(1)
+

@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block title %}Editing {{repo.repository_name }}{% endblock %}
+{% block content %}
+<form action="{{ url_for('edit_repo', id=repo.repository_id) }}" method="POST">
+
+<h2>{{ repo.repository_name }}</h2>
+
+<p>
+    You may
+    <a href="{{ url_for('delete_repo', id=repo.repository_id) }}">delete</a>
+    this repository, if you feel like it.  Beware: that link requires no
+    confirmation!
+</p>
+
+<h2>Access Control Levels (ACLs)</h2>
+
+<table>
+    <tr>
+        <th>User</th>
+        <th>Owner</th>
+        <th>Read</th>
+        <th>Write</th>
+        <th>Rewrite History</th>
+        <th>Create Tags</th>
+        <th>Modify Tags</th>
+    </tr>
+
+{% for repo_acl in repo_acls %}
+    <tr>
+        <td>{{ repo_acl.user_name }}</td>
+
+        <td>
+            <input
+                type="checkbox"
+                name="is_owner_{{ repo_acl.user_id }}"
+{% if repo_acl.is_owner %}
+                checked="true"
+{% endif %}
+            />
+        </td>
+
+        <td>
+            <input
+                type="checkbox"
+                name="can_read_{{ repo_acl.user_id }}"
+{% if repo_acl.can_read %}
+                checked="true"
+{% endif %}
+            />
+        </td>
+
+        <td>
+            <input
+                type="checkbox"
+                name="can_write_{{ repo_acl.user_id }}"
+{% if repo_acl.can_write %}
+                checked="true"
+{% endif %}
+            />
+        </td>
+
+        <td>
+            <input
+                type="checkbox"
+                name="can_rewind_{{ repo_acl.user_id }}"
+{% if repo_acl.can_rewind %}
+                checked="true"
+{% endif %}
+            />
+        </td>
+
+        <td>
+            <input
+                type="checkbox"
+                name="can_create_tag_{{ repo_acl.user_id }}"
+{% if repo_acl.can_create_tag %}
+                checked="true"
+{% endif %}
+            />
+        </td>
+
+        <td>
+            <input
+                type="checkbox"
+                name="can_modify_tag_{{ repo_acl.user_id }}"
+{% if repo_acl.can_modify_tag %}
+                checked="true"
+{% endif %}
+            />
+            <input
+                type="hidden"
+                name="exists_{{ repo_acl.user_id }}"
+                value="yes"
+            />
+        </td>
+
+    </tr>
+
+{% endfor %}
+
+</table>
+
+<input type="submit" value="Commit" />
+
+</form>
+
+{% endblock %}

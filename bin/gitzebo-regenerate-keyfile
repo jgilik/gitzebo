@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+from gitzebo.keys import regenerate_authorized_keys
+from sys import exit
+regenerate_authorized_keys()
+exit(0)

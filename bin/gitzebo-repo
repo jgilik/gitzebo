@@ -1,0 +1,46 @@
+from gitzebo.repos import create_repo, update_hooks
+from gitzebo.users import get_user
+
+if __name__ == '__main__':
+    import argparse, sys
+    parser = argparse.ArgumentParser(
+        description="Tool to create, destroy, refresh, or upgrade Gitzebo schemas."
+    )
+    parser.add_argument(
+        'command',
+        type=str,
+        help="'create', 'upgrade', 'refresh', or 'destroy'",
+    )
+    parser.add_argument(
+        '--repo',
+        type=str,
+        help="Name of the repository to manipulate.",
+    )
+    parser.add_argument(
+        '--owner',
+        type=str,
+        help="Username of repository owner; only used with create mode.",
+    )
+    args = parser.parse_args()
+    if not args.repo:
+        print "ERROR: You must specify a target repository with --repo!"
+    if args.command == 'create':
+        if not args.owner:
+            print "ERROR: You must specify a repository owner with --owner!"
+            sys.exit(1)
+        user_name = args.owner
+        user = get_user(user_name)
+        user_id = user['user_id']
+        create_repo(args.repo, user_id)
+    elif args.command == 'upgrade':
+        print "TODO: NOT IMPLEMENTED"
+        sys.exit(1)
+    elif args.command == 'refresh':
+        update_hooks(args.repo)
+    elif args.command == 'destroy':
+        print "TODO: NOT IMPLEMENTED"
+        sys.exit(1)
+    else:
+        parser.print_help()
+        sys.exit(1)
+

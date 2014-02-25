@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+import sys, os, subprocess, csv, StringIO
+lf = open('ssh_entrypoint.log', 'w')
+
+username = None
+venv_dir = None
+for specifier in sys.argv[1:]:
+    pieces = specifier.split('=')
+    if len(pieces) < 2:
+        lf.write("Invalid environment specifier {0}".format(specifier))
+    key = pieces[0]
+    value = '='.join(pieces[1:])
+    if key == 'USERNAME':
+        username = value
+    elif key == 'VIRTUAL_ENV':
+        venv_dir = value
+
+if venv_dir:
+    # Activate virtualenv
+    lf.write("Using virtualenv rooted at " + venv_dir)
+    activator = os.path.join(venv_dir, 'bin', 'activate_this.py')
+    execfile(activator, dict(__file__=activator))
+
+for k, v in os.environ.items():
+    lf.write("ENV {0} = {1}\n".format(k, v))
+
+if not username:
+    lf.write("You 'aven't go' a bloody name!\n")
+    sys.exit(1)
+
+lf.write("NAME: {0}\n".format(username))
+
+if 'SSH_ORIGINAL_COMMAND' not in os.environ:
+    lf.write("You 'aven't go' a bloody command!\n")
+    sys.exit(1)
+
+cmd_file = StringIO.StringIO()
+cmd_file.write(os.environ['SSH_ORIGINAL_COMMAND'])
+cmd_file.seek(0)
+cmd_reader = csv.reader(cmd_file, delimiter=' ', quotechar="'")
+cmd = None
+for line in cmd_reader:
+    if cmd is not None:
+        lf.write("Only one command allowed!\n")
+        raise Exception("Only one command allowed!")
+    cmd = line
+
+if cmd[0] == 'git-receive-pack':
+    lf.write("git push in progress\n")
+elif cmd[0] == 'git-upload-pack':
+    # Derive repository name...
+    lf.write("git pull in progress\n")
+    repo_name = cmd[1]
+    if len(repo_name) < 4 or repo_name[-4:] != '.git':
+        repo_name += '.git'
+    lf.write("Operating on repo '{0}'\n".format(repo_name))
+
+    # Check ACLs for this username and repo
+    from gitzebo.users import get_user
+    from gitzebo.repos import get_repo, get_repo_acls
+    user = get_user(username)
+    if not user:
+        lf.write("Could not find user '{0}' in database.\n".format(username))
+        sys.exit(1)
+    user_id = user['user_id']
+
+    repo = get_repo(repo_name)
+    if not repo:
+        lf.write("Could not find repo '{0}' in database.\n".format(repo))
+        sys.exit(1)
+    repo_id = repo['repository_id']
+
+    repo_acls = get_repo_acls(repo_id=repo_id, user_id=user_id)
+    if not repo_acls:
+        lf.write("Could not find user \"{0}\"'s ACLs for repo '{1}'\n".format(
+            username, repo_name))
+        sys.exit(1)
+    if not repo_acls['can_read']:
+        lf.write("User '{0}' not allowed to read from repo '{1}'\n".format(
+            username, repo_name))
+        sys.exit(1)
+
+    lf.write("User '{0}' passed read ACL check for repo '{1}'\n".format(
+        username, repo_name))
+else:
+    lf.write("Unknown command: " + cmd[0] + "\n")
+    raise Exception("Unknown command: " + cmd[0])
+for arg in cmd:
+    lf.write("Command[]: {0}\n".format(arg))
+
+env_in = os.environ
+env_in['USERNAME'] = username
+
+# Make sure that ssh://server/repo points to repo_root/repo
+#from repos import repo_root #TODO FIX THIS
+repo_root = '/opt/git'
+os.chdir(repo_root)
+
+proc = subprocess.Popen(cmd, shell=False, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr, env=env_in)
+retcode = proc.wait()
+lf.write("Command returned {0}\n".format(retcode))
+lf.close() # clean up files before handing over control
+sys.exit(retcode)

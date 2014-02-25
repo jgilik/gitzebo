@@ -1,0 +1,148 @@
+#!/usr/bin/env python
+# INSERT ENVIRONMENT HACKS HERE
+# This script is derived from the bash example update script here:
+# https://www.kernel.org/pub/software/scm/git/docs/howto/update-hook-example.txt
+import os, sys
+
+def log(s):
+    """
+    We'll want a better debug interface later, but this will prevent a lot of
+    s/^(\s*)print\s+(.*)$/\\1log(\\2)/g shenanigans in the future.
+    """
+    print s
+
+def deny(s):
+    """
+    Deny update access with a message.
+    """
+    log(s)
+    sys.exit(1)
+
+def allow(s):
+    """
+    Allow update access with a message.
+    """
+    log(s)
+    sys.exit(0)
+
+log("You're inside a gitzebo update hook.")
+
+# Find out who we are
+username = os.getenv('USERNAME', None)
+if not username:
+    deny("No username provided; likely a gitzebo bug")
+
+# Look that up in the database
+from gitzebo.users import get_user
+user = get_user(username)
+if not user:
+    deny("User with name '{0}' not found in database.".format(username))
+user_id = user['user_id']
+log("Your user ID is {0}".format(user_id))
+
+# Find out what repository we're playing with
+git_dir = os.getenv('GIT_DIR', '')
+if git_dir != '.':
+    deny("GIT_DIR is a strange value: {0}".format(git_dir))
+log("Your current directory is {0}".format(os.getcwd()))
+repo_name = os.path.basename(os.getcwd())
+log("Your repository name is {0}".format(repo_name))
+
+# Look it up in the database
+from gitzebo.repos import get_repo, get_repo_acls
+repo = get_repo(repo_name)
+if not repo:
+    deny("Repository with name '{0}' not found in database.".format(repo_name))
+repo_id = repo['repository_id']
+log("Your repository ID is {0}".format(repo_id))
+
+# List our user-repo permissions
+repo_acls = get_repo_acls(repo_id=repo_id, user_id=user_id)
+if not repo_acls or len(repo_acls) < 1:
+    # TODO: Eventually, we may want configurable default ACLs for repos...
+    deny("You have no ACLs set in this repository; denying by default.")
+repo_acls = repo_acls[0]
+log("Repo ACLs are as follows:")
+
+can_write = repo_acls['can_write']
+if can_write:
+    log(" - We can push regular commits (fast-forward commits)")
+
+can_rewind = repo_acls['can_rewind']
+if can_rewind:
+    log(" - We can push commits with rewritten histories (rewind commits)")
+
+can_create_tag = repo_acls['can_create_tag']
+if can_create_tag:
+    log(" - We can create tags in this repository.")
+
+can_modify_tag = repo_acls['can_modify_tag']
+if can_modify_tag:
+    log(" - We can modify tags in this repository.")
+
+# Check what this push is trying to do
+from sh import git, ErrorReturnCode
+is_write = False
+is_rewind = False
+is_create_tag = False
+is_modify_tag = False
+branch_spec = sys.argv[1]
+log("Attempting to operate on branch spec {0}".format(branch_spec))
+if len(branch_spec) < 5 or branch_spec[0:5] != "refs/":
+    deny("Malformed branch spec '{0}'--should begin with refs/"
+        .format(branch_spec))
+
+# If we're trying to manipulate tags...
+if len(branch_spec) >= 10 and branch_spec[0:10] == "refs/tags/":
+    tag_name = branch_spec[10:]
+    log("We have a tag: {0}".format(tag_name))
+    # Check whether we're creating one or modifying one
+    try:
+        git('rev-parse', '--verify', '-q', branch_spec)
+    except ErrorReturnCode:
+        is_modify_tag = True
+    if not is_modify_tag:
+        is_create_tag = True
+
+# If we're trying to manipulate a regular branch...
+elif len(branch_spec) >= 11 and branch_spec[0:11] == "refs/heads/":
+    branch_name = branch_spec[6:]
+    log("We have a branch: {0}".format(branch_name))
+    old_sha1 = sys.argv[2].strip()
+    log("The old SHA1 is: {0}".format(old_sha1))
+    if old_sha1.strip('0') == '':
+        is_create_tag = True
+        log("This is a new branch.")
+    else:
+        new_sha1 = sys.argv[3].strip()
+        log("The new SHA1 is: {0}".format(new_sha1))
+        merge_base = git('merge-base', old_sha1, new_sha1).strip()
+        log("The merge base is: {0}".format(merge_base))
+        if merge_base == old_sha1:
+            is_write = True
+            log("Merge base is the old SHA1, so this is a fast-forward push.")
+        else:
+            is_rewind = True
+            log("Merge base is not the old SHA1, so this is a rewind.")
+
+else:
+    deny("Malformed branch spec '{0}'--should be in refs/tags/ or refs/heads/"
+        .format(branch_spec))
+
+# TODO: We need to also check author names and emails, so that we can create
+#       separate maintainer and IC roles.
+
+# Check our desired actions against the ACLs specified
+if is_write and not can_write:
+    deny("Not allowed to perform fast-forward updates.")
+if is_rewind and not can_rewind:
+    deny("Not allowed to perform rewind (history rewrite) updates.")
+if is_create_tag and not can_create_tag:
+    deny("Not allowed to create tags.")
+if is_modify_tag and not can_modify_tag:
+    deny("Not allowed to modify tags.")
+
+if not (is_write or is_rewind or is_create_tag or is_modify_tag):
+    deny("Failed to classify action; denying by default.")
+
+allow("Proceeding.")

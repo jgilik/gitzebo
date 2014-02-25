@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}User List{% endblock %}
+{% block content %}
+<h2>Users</h2>
+<ul>
+{% for user in userlist %}
+<li>
+{{ user.user_name }}
+</li>
+{% endfor %}
+</ul>
+
+{% if request.user.can_create_users %}
+<h2>Create a User</h2>
+<form action="{{ url_for('add_user') }}" method="POST">
+<p>
+    <label for="user_name">User Name:</label>
+    <input name="user_name" type="text" />
+</p>
+<p>
+    <label for="user_password">Password:</label>
+    <input name="user_password" type="password" />
+</p>
+<p>
+    <label for="commit_name">Full Name (used in commit messages):</label>
+    <input name="commit_name" type="text" />
+</p>
+<p>
+    <label for="commit_email">E-Mail Address (used in commit messages):</label>
+    <input name="commit_email" type="text" />
+</p>
+<p>
+    <input type="submit" value="Create User" />
+</p>
+</form>
+{% endif %}
+
+{% endblock %}
