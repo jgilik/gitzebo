@@ -67,4 +67,13 @@ gitolite
 How? (Deployment)
 -----------------
 
-.. todo:: Document deployment!
+Deployment is currently limited to using the built-in Flask development
+server.  An alias is provided for ease of use--as a result, you can stand
+up a gitzebo server with the following command set::
+
+    virtualenv gitzebo-env
+    source gitzebo-env/bin/activate
+    pip install gitzebo
+    gitzebo-schema create
+    gitzebo-dev-server
+
