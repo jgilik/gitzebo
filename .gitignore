@@ -4,4 +4,6 @@ develop-eggs/
 dist/
 *.egg-info/
 *.egg
+*.pyc
+*.db
 .installed.cfg
