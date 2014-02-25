@@ -28,13 +28,11 @@ setup(
     # TODO: How do we make this and version.py play nicely together without
     #       a MAJOR hack that winds up breaking automated build frameworks?
     #       (For example, we don't want to break fpm compatibility.)
-    version="0.0.2",
+    version="0.0.3",
     author="John Gilik",
     author_email="john@jgilik.com",
     description=("A minimal git management web application."),
-    # TODO: This is the most restrictive OSS license I could find.  Is it
-    #       necessary?  What does gitorious and GitLab use?
-    license="GNU Affero GPL",
+    license="2-Clause BSD License",
     keywords="git",
     url="http://jgilik.com/gitzebo/",
     packages=['gitzebo'],
