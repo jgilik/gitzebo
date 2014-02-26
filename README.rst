@@ -45,7 +45,7 @@ lightweight
     and focused as possible, which is something I like.  I took away points
     for doing too much, which it seemed all git management solutions did.
 
-The four de-facto solutions each violated one of these requirements flagrantly:
+The four de-facto solutions each violated one of these requirements:
 
 GitHub
     GitHub is software-as-a-service.
@@ -67,7 +67,8 @@ gitolite
     gitolite does not have a web application for management built in, so I'd
     have to add one to meet my requirements.  As such, it's more of a library
     or back-end than a full-blown application.  It being written in Perl and
-    not having a well-defined API made me extremely nervous.
+    not having a well-defined API made me extremely nervous, as it seemed like
+    adding a web front-end would be difficult.
 
 
 How? (Deployment)
