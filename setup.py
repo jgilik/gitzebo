@@ -20,8 +20,12 @@ def scripts():
     """
     Reads all *.py filenames in ./bin for use as setup(scripts=) argument.
     """
-    script_dir = os.path.join(os.path.dirname(__file__), 'bin')
-    return glob(os.path.join(script_dir,'*'))
+    setup_dir = os.path.dirname(__file__)
+    script_dir = os.path.join(setup_dir, 'bin')
+    scripts = glob(os.path.join(script_dir,'*'))
+    scripts = [os.path.relpath(p, setup_dir) for p in scripts]
+    scripts = [s for s in scripts if s not in ['.', '..']]
+    return scripts
 
 setup(
     name = "gitzebo",
@@ -36,6 +40,7 @@ setup(
     keywords="git",
     url="http://jgilik.com/gitzebo/",
     packages=['gitzebo'],
+    include_package_data=True, # include templates, static, etc
     long_description=read('README.rst'),
     scripts=scripts(),
     install_requires=requirements(),
