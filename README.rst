@@ -39,6 +39,12 @@ in-house deployment
     management, and monitoring?  Those three are the absolute keys to your
     IT kingdom.  My source code management solution will not be SaaS.
 
+lightweight
+    I don't necessarily want a bug tracker and pretty graphs and the like.
+    The going Linux/UNIX philosophy is to keep each component as lightweight
+    and focused as possible, which is something I like.  I took away points
+    for doing too much, which it seemed all git management solutions did.
+
 The four de-facto solutions each violated one of these requirements flagrantly:
 
 GitHub
