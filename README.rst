@@ -4,7 +4,51 @@ gitzebo
 What is gitzebo?
 ----------------
 
-gitzebo is a small Python git management web application.
+gitzebo is a small Python git management web application.  It was named
+gitzebo as it is intended to be a smaller, more lightweight, more secluded
+variant of the service GitHub and GitLab provide.
+
+It is ideal for creating, managing, and sharing git repositories among
+small groups of developers.
+
+
+Where? (Tested Platforms)
+-------------------------
+
+gitzebo theoretically runs on any host with git and Python installed.
+
+Realistically, it has only been tested on CentOS 6.5.  This means that
+Red Hat Enterprise Linux 6.5 will likely work with no modifications, and
+that some slight variances in deployment instructions will be needed for
+Debian-based hosts (including Ubuntu).
+
+I'm working on setting up automated testing across multiple platforms.
+
+
+How? (Deployment)
+-----------------
+
+Before deploying the web app, you need to install gitzebo and initialize
+its sqlite database::
+
+    virtualenv gitzebo-env
+    source gitzebo-env/bin/activate
+    pip install gitzebo
+    gitzebo-schema create
+
+After you've done so, you can bring up a development server to test it out::
+
+    gitzebo-dev-server
+
+Or you can jump directly to generating a mod_wsgi configuration using a
+helper utility::
+
+    # Tested on Red Hat / CentOS 6.5
+    gitzebo-generate-conf > /etc/httpd/conf.d/gitzebo.conf
+    service httpd restart
+
+Your Apache instance's configuration directory will vary on Debian or
+Ubuntu, as will the command to restart Apache.
 
 
 Why Reinvent the Wheel?!
@@ -70,17 +114,4 @@ gitolite
     not having a well-defined API made me extremely nervous, as it seemed like
     adding a web front-end would be difficult.
 
-
-How? (Deployment)
------------------
-
-Deployment is currently limited to using the built-in Flask development
-server.  An alias is provided for ease of use--as a result, you can stand
-up a gitzebo server with the following command set::
-
-    virtualenv gitzebo-env
-    source gitzebo-env/bin/activate
-    pip install gitzebo
-    gitzebo-schema create
-    gitzebo-dev-server
 
