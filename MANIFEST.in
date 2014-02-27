@@ -7,5 +7,11 @@ recursive-include gitzebo/default_hooks *
 include gitzebo/gitzebo.wsgi
 
 # used when installing library from source distributions
+# setup.py explicitly reads these files, and will fail without
+# them present!
 include requirements.txt
 include README.rst
+
+# only gets dumped in source distribution, but folks who download
+# source from PyPI may be confused without it present
+include HACKING.rst
