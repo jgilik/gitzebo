@@ -1,6 +1,10 @@
+# include data files gitzebo requires
 recursive-include gitzebo/templates *
 recursive-include gitzebo/static *
 recursive-include gitzebo/default_hooks *
+
+# WSGI stub required for gitzebo to run
+include gitzebo/gitzebo.wsgi
 
 # used when installing library from source distributions
 include requirements.txt
