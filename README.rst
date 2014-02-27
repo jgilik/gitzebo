@@ -12,8 +12,8 @@ It is ideal for creating, managing, and sharing git repositories among
 small groups of developers.
 
 
-Where? (Tested Platforms)
--------------------------
+Where Does gitzebo Run?
+-----------------------
 
 gitzebo theoretically runs on any host with git and Python installed.
 
@@ -23,6 +23,17 @@ that some slight variances in deployment instructions will be needed for
 Debian-based hosts (including Ubuntu).
 
 I'm working on setting up automated testing across multiple platforms.
+
+
+Where's More?
+-------------
+
+The Python Package Index (PyPI) hosts source distributions.  The gitzebo
+page is `here <https://pypi.python.org/pypi/gitzebo>`_.  This means that
+``pip``, ``easy_install``, and the like can be used to install gitzebo.
+
+Documentation will eventually appear `on my site
+<http://jgilik.com/gitzebo/>`_.
 
 
 How? (Deployment)
