@@ -90,8 +90,6 @@ def create_schema(version=latest_version, db=db):
     # Create the default admin user
     from users import create_user
     id = create_user('admin', password='admin', commit_email='', can_create_users=True, can_create_repositories=True)
-    id = create_user('jgilik', password='test', commit_name='John Gilik', commit_email='john@jgilik.com', can_create_users=True, can_create_repositories=True)
-    id = create_user('test', password='test', commit_name='Tester McDonald', commit_email='test@example.com')
 
 def upgrade_schema(db=db):
     raise Exception("upgrade_schema() not implemented")
