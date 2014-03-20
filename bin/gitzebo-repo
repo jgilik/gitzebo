@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from gitzebo.repos import create_repo, update_hooks
 from gitzebo.users import get_user
 
