@@ -11,6 +11,20 @@ variant of the service GitHub and GitLab provide.
 It is ideal for creating, managing, and sharing git repositories among
 small groups of developers.
 
+Quality Warning
+^^^^^^^^^^^^^^^
+
+gitzebo is under development.  This means that a bare minimum of functionality
+is available, and it likely contains bugs.
+
+The following features are planned, but missing:
+
+* password changes
+* pagination
+* ``gitzebo-generate-conf`` utility to generate configuration templates
+
+Please don't run gitzebo in production without changing the admin password!
+
 
 Where Does gitzebo Run?
 -----------------------
@@ -60,6 +74,9 @@ helper utility::
 
 Your Apache instance's configuration directory will vary on Debian or
 Ubuntu, as will the command to restart Apache.
+
+Once you have an instance running, you can use the username ``admin``
+with the password ``admin`` to log in.
 
 
 Why Reinvent the Wheel?!
