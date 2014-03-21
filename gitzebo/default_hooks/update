@@ -106,7 +106,7 @@ if len(branch_spec) >= 10 and branch_spec[0:10] == "refs/tags/":
 
 # If we're trying to manipulate a regular branch...
 elif len(branch_spec) >= 11 and branch_spec[0:11] == "refs/heads/":
-    branch_name = branch_spec[6:]
+    branch_name = branch_spec[5:]
     log("We have a branch: {0}".format(branch_name))
     old_sha1 = sys.argv[2].strip()
     log("The old SHA1 is: {0}".format(old_sha1))
