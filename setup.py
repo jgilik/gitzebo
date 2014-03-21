@@ -32,7 +32,7 @@ setup(
     # TODO: How do we make this and version.py play nicely together without
     #       a MAJOR hack that winds up breaking automated build frameworks?
     #       (For example, we don't want to break fpm compatibility.)
-    version="0.0.8",
+    version="0.0.9",
     author="John Gilik",
     author_email="john@jgilik.com",
     description=("A minimal git management web application."),
