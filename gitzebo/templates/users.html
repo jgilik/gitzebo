@@ -5,7 +5,9 @@
 <ul>
 {% for user in userlist %}
 <li>
-{{ user.user_name }}
+    <a href="{{ url_for('user_details', id=user.user_id) }}">
+        {{ user.user_name }}
+    </a>
 </li>
 {% endfor %}
 </ul>

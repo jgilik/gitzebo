@@ -47,6 +47,24 @@ def create_user(name, password, commit_name=None, commit_email=None, can_create_
     result = db.execute(stmt)
     return result.inserted_primary_key[0]
 
+def change_password(name, password, old_password=None):
+    """
+    Changes the target user's password to the password given by
+    ``password``.  If ``old_password`` is given but does not match
+    the user's current password, a ValueError is raised.
+    """
+    if not get_user(name):
+        raise KeyError("User '{0}' not found".format(name))
+    if old_password is not None:
+        if not verify_user(name, password):
+            raise ValueError("Old password was incorrect.")
+    salt = generate_salt()
+    hash = hash_password(password, salt)
+    db.execute(users
+        .update()
+        .values(pass_salt=salt, pass_hash=hash)
+        .where(users.c.user_name == name))
+
 def delete_user(user_id):
     s = repo_acls.delete().where(repo_acls.c.user_id == user_id)
     result = db.execute(s)

@@ -72,6 +72,35 @@ def user_details(id):
     user = users.get_user_by_id(id)
     return render_template('user_details.html', user=user)
 
+@app.route("/users/password/<int:id>", methods=['POST'])
+@requires_auth
+def change_user_password(id):
+    # Permissions check
+    if id != request.user['user_id'] and not request.user['can_create_users']:
+        raise KeyError("You must be an admin to change other users' passwords")
+
+    # Parsing form data
+    new_password = request.form['new_password']
+    try:
+        old_password = request.form['old_password']
+    except KeyError:
+        old_password = None
+
+    # TODO: Fetching user by ID is silly if all we're using it for is a key
+    #       in change_password()... 
+    user = users.get_user_by_id(id)
+    name = user['user_name']
+
+    # old_password = None tells change_password() to ignore the old
+    # password check.  As a result, it should only be None if the user
+    # has administrative privileges, or an attack surface for account
+    # hijacking exists.
+    if old_password is None and not request.user['can_create_users']:
+        raise ValueError("old_password is None, and you are not an admin.")
+
+    users.change_password(name, new_password, old_password)
+    return redirect(url_for('user_details', id=id))
+
 @app.route("/users/add", methods=['POST'])
 @requires_auth
 def add_user():

@@ -30,6 +30,33 @@
         {{ user.user_name }}
     </td>
 </tr>
+{% if request.user['can_create_users']
+    or request.user['user_id'] == user.user_id %}
+<form
+    method="POST"
+    action="{{ url_for('change_user_password', id=user.user_id) }}"
+>
+{% if not request.user['can_create_users'] %}
+<tr>
+    <td class="tblLt">
+        Old Password
+    </td>
+    <td class="tblRt">
+        <input type="password" name="old_password" />
+    </td>
+</tr>
+{% endif %}
+<tr>
+    <td class="tblLt">
+        New Password
+    </td>
+    <td class="tblRt">
+        <input type="password" name="new_password" />
+        <input type="submit" value="Change Password" />
+    </td>
+</tr>
+</form>
+{% endif %}
 {% if request.user['can_create_users'] %}
 <tr>
     <td class="tblLt">
