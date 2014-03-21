@@ -92,6 +92,8 @@ def verify_user(name, password):
         user = get_user(name)
     except KeyError:
         return None
+    if not user:
+        return None
     salt = user[users.c.pass_salt]
     correct_hash = user[users.c.pass_hash]
     attempt_hash = hash_password(password, salt)
