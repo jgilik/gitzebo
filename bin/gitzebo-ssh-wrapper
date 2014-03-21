@@ -71,11 +71,11 @@ elif cmd[0] == 'git-upload-pack':
     repo_id = repo['repository_id']
 
     repo_acls = get_repo_acls(repo_id=repo_id, user_id=user_id)
-    if not repo_acls:
+    if not repo_acls or len(repo_acls) < 1:
         lf.write("Could not find user \"{0}\"'s ACLs for repo '{1}'\n".format(
             username, repo_name))
         sys.exit(1)
-    if not repo_acls['can_read']:
+    if not repo_acls[0]['can_read']:
         lf.write("User '{0}' not allowed to read from repo '{1}'\n".format(
             username, repo_name))
         sys.exit(1)
