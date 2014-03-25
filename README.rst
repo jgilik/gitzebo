@@ -83,14 +83,13 @@ by convention::
     gitzebo-schema create
 
 After you've done so, you can bring up a development server to test it out.
-This will let you reach gitzebo at :samp:`http://{hostname_or_ip}:8081/`::
+This will let you reach gitzebo at ``http://{hostname_or_ip}:8081/``::
 
     # as git user
     gitzebo-dev-server
 
 Or you can jump directly to generating a mod_wsgi configuration using a
-helper utility.  This will let you reach gitzebo at
-:samp:`http://{hostname}/`::
+helper utility.  This will let you reach gitzebo at ``http://{hostname}/``::
 
     # as root user
     # TODO: yet to be implemented
