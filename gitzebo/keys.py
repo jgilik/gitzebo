@@ -8,6 +8,9 @@ users = schema.get_table('users') # used when generating authorized_keys
 # We'll also need some SQLAlchemy functionality to write queries.
 from sqlalchemy.sql import select
 
+# os.path and errno are used in rewriting the authorized_keys file
+import os, errno
+
 # TODO: We assume RSA keys at the moment.
 
 def validate_key(key):
@@ -87,9 +90,6 @@ def get_keys(user_id):
     return result.fetchall()
 
 def regenerate_authorized_keys():
-    # os will be used for path manipulation and environment reading
-    import os
-
     # do as much validaton as possible
     home = os.getenv('HOME', None)
     if home is None:
@@ -103,11 +103,19 @@ def regenerate_authorized_keys():
     from distutils.spawn import find_executable
     wrapper_path = find_executable('gitzebo-ssh-wrapper')
 
-    # write resultset to file
+    # make sure ssh directory exists
     target_dir = os.path.join(home, '.ssh')
+    try:
+        os.makedirs(target_dir)
+        os.chmod(target_dir, 0700)
+    except OSError as e:
+        if e.errno == errno.EEXIST and os.path.isdir(target_dir):
+            pass
+        else:
+            raise
+
+    # write resultset to file
     target_path = os.path.join(target_dir, 'authorized_keys')
-    #gitzebo_dir = os.path.dirname(os.path.abspath(__file__))
-    #wrapper_path = os.path.join(gitzebo_dir, 'gitzebo-ssh-wrapper')
     # TODO: eventually allow for DSA keys, too?
     venv = ''
     venv_dir = os.getenv('VIRTUAL_ENV', None)
