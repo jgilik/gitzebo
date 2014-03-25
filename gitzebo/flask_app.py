@@ -72,6 +72,24 @@ def user_details(id):
     user = users.get_user_by_id(id)
     return render_template('user_details.html', user=user)
 
+@app.route("/users/permissions/<int:id>", methods=['POST'])
+@requires_auth
+def change_user_permissions(id):
+    # Permissions check
+    if not request.user['can_create_users']:
+        raise KeyError("You must be an admin to change user permissions")
+
+    # Parsing form data
+    can_create_users = request.form['can_create_users']
+    can_create_repositories = request.form['can_create_repositories']
+
+    # Commit it all
+    users.update_permissions(id,
+        can_create_users=can_create_users,
+        can_create_repositories=can_create_repositories)
+
+    return redirect(url_for('user_details', id=id))
+
 @app.route("/users/password/<int:id>", methods=['POST'])
 @requires_auth
 def change_user_password(id):

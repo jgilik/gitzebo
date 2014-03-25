@@ -65,6 +65,20 @@ def change_password(name, password, old_password=None):
         .values(pass_salt=salt, pass_hash=hash)
         .where(users.c.user_name == name))
 
+def update_permissions(id, **kwargs):
+    allowed_permissions = [
+        'can_create_users',
+        'can_create_repositories'
+    ]
+    for key in kwargs.keys():
+        if key not in allowed_permissions:
+            raise KeyError("You can only change these permissions: " +
+                ', '.join(allowed_permissions))
+    db.execute(users
+        .update()
+        .values(**kwargs)
+        .where(users.c.user_id == id))
+
 def delete_user(user_id):
     s = repo_acls.delete().where(repo_acls.c.user_id == user_id)
     result = db.execute(s)

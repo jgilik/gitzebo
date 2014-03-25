@@ -58,6 +58,71 @@
 </form>
 {% endif %}
 {% if request.user['can_create_users'] %}
+<form
+    method="POST"
+    action="{{ url_for('change_user_permissions', id=user.user_id) }}"
+>
+<tr>
+    <td class="tblLt">
+        Can Manage Users<br />
+        <span class="note">Covers creation, editing, and deletion</span>
+    </td>
+    <td class="tblRt">
+        <input
+            type="radio"
+            name="can_create_users"
+            value="1"
+{% if user['can_create_users'] %}
+            checked="checked"
+{% endif %}
+            id="can_create_users_yes" />
+        <label for="can_create_users_yes">Yes</label>
+        <input
+            type="radio"
+            name="can_create_users"
+            value="0"
+{% if not user['can_create_users'] %}
+            checked="checked"
+{% endif %}
+            id="can_create_users_no" />
+        <label for="can_create_users_no">No</label>
+    </td>
+</tr>
+<tr>
+    <td class="tblLt">
+        Can Manage Repositories<br />
+        <span class="note">Covers creation, editing, and deletion</span>
+    </td>
+    <td class="tblRt">
+        <input
+            type="radio"
+            name="can_create_repositories"
+            value="1"
+{% if user['can_create_repositories'] %}
+            checked="checked"
+{% endif %}
+            id="can_create_repositories_yes" />
+        <label for="can_create_repositories_yes">Yes</label>
+        <input
+            type="radio"
+            name="can_create_repositories"
+            value="0"
+{% if not user['can_create_repositories'] %}
+            checked="checked"
+{% endif %}
+            id="can_create_repositories_no" />
+        <label for="can_create_repositories_no">No</label>
+    </td>
+</tr>
+<tr>
+    <td class="tblLt">
+        Commit ACL Changes
+    </td>
+    <td class="tblRt">
+        <input type="submit" value="Change Access Control Levels" />
+    </td>
+</tr>
+</form>
 <tr>
     <td class="tblLt">
         Deletion Link<br />
