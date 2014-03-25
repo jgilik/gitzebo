@@ -50,22 +50,52 @@ Documentation will eventually appear `on my site
 How? (Deployment)
 -----------------
 
-Before deploying the web app, you need to install gitzebo and initialize
-its sqlite database::
+Prior to installing, you'll need to have ``git``, ``python``, and
+``virtualenv`` installed.  On RHEL/CentOS, you can install them with::
 
-    virtualenv gitzebo-env
-    source gitzebo-env/bin/activate
+    # as root user
+    # python-virtualenv lives in EPEL, install EPEL:
+    rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+    yum -y install git python python-virtualenv
+
+We also assume the presence of a git user (to run the webapp and to own
+the repositories managed by it), and that an ``/opt/git`` directory exists
+owned by this user.  Make it so::
+
+    # as root user
+    getent passwd git || useradd git
+    if [[ ! -d "/opt/git" ]]
+    then
+        mkdir -p /opt/git
+        chown git: /opt/git
+    fi
+
+Before deploying the web app, you need to install gitzebo and initialize
+its sqlite database.  Note that your virtualenv should be readable by root if
+you want Apache deployment to work.  Apache needs to read your virtualenv to
+start Python interpreters in it -- so we create virtualenvs in ``/opt/git``
+by convention::
+
+    # as git user
+    virtualenv /opt/git/env
+    source /opt/git/env/bin/activate
     pip install gitzebo
     gitzebo-schema create
 
-After you've done so, you can bring up a development server to test it out::
+After you've done so, you can bring up a development server to test it out.
+This will let you reach gitzebo at :samp:`http://{hostname_or_ip}:8081/`::
 
+    # as git user
     gitzebo-dev-server
 
 Or you can jump directly to generating a mod_wsgi configuration using a
-helper utility::
+helper utility.  This will let you reach gitzebo at
+:samp:`http://{hostname}/`::
 
-    # Tested on Red Hat / CentOS 6.5
+    # as root user
+    # TODO: yet to be implemented
+    rpm -q httpd || yum -y install httpd
+    rpm -q mod_wsgi || yum -y install mod_wsgi
     gitzebo-generate-conf > /etc/httpd/conf.d/gitzebo.conf
     service httpd restart
 
