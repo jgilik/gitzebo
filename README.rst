@@ -19,11 +19,8 @@ is available, and it likely contains bugs.
 
 The following features are planned, but missing:
 
-* password changes
 * pagination
 * ``gitzebo-generate-conf`` utility to generate configuration templates
-
-Please don't run gitzebo in production without changing the admin password!
 
 
 Where Does gitzebo Run?
@@ -77,6 +74,8 @@ Ubuntu, as will the command to restart Apache.
 
 Once you have an instance running, you can use the username ``admin``
 with the password ``admin`` to log in.
+
+Either way, once you've logged in: **change the password**.
 
 
 Why Reinvent the Wheel?!
