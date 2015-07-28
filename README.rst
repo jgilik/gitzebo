@@ -11,16 +11,15 @@ variant of the service GitHub and GitLab provide.
 It is ideal for creating, managing, and sharing git repositories among
 small groups of developers.
 
-Quality Warning
-^^^^^^^^^^^^^^^
+Deprecation Warning
+^^^^^^^^^^^^^^^^^^^
 
-gitzebo is under development.  This means that a bare minimum of functionality
-is available, and it likely contains bugs.
+I'm still using gitzebo myself.  However, I do not have plans to add
+significant functionality to the Python version of the project, as I'm
+slowly transitioning to using Go for most of everything I do.
 
-The following features are planned, but missing:
-
-* pagination
-* ``gitzebo-generate-conf`` utility to generate configuration templates
+Migration from Python gitzebo will be fairly simple when the Go version
+is available, as Go programs tend to be easier to deploy.
 
 
 Where Does gitzebo Run?
